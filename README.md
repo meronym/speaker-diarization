@@ -1,10 +1,12 @@
 # speaker-diarization
 
+This repository contains the Cog definition files for the associated speaker diarization model [deployed on Replicate](https://replicate.com/meronym/speaker-diarization).
+
 This model receives an audio file and identifies the individual speakers within the recording. The output is a list of annotated speech segments, along with global information about the number of detected speakers and an embedding vector for each speaker to describe the quality of his/her voice.
 
 ## Model description
 
-The model is based on a pre-trained speaker diarization pipeline from the [`pyannote.audio`](pyannote.github.io) package, with a thin post-processing layer.
+The model is based on a pre-trained speaker diarization pipeline from the [`pyannote.audio`](pyannote.github.io) package, with a post-processing layer that cleans up the output segments and computes input-wide speaker embeddings.
 
 `pyannote.audio` is an open-source toolkit written in Python for speaker diarization. Based on the [PyTorch](pytorch.org) machine learning framework, it provides a set of trainable end-to-end neural building blocks that can be combined and jointly optimized to build speaker diarization pipelines.
 
@@ -15,6 +17,42 @@ The main pipeline makes use of:
 - `AgglomerativeClustering` for determining individual speakers
 
 See [this post](https://herve.niderb.fr/fastpages/2022/10/23/One-speaker-segmentation-model-to-rule-them-all.html) (from `pyannote.audio`'s author) for more details.
+
+## Output format
+
+The model outputs a single `output.json` file with the following structure:
+
+```json
+{
+  "segments": [
+    {
+      "speaker": "A",
+      "start": "0:00:00.497812",
+      "stop": "0:00:49.452188"
+    },
+    {
+      "speaker": "B",
+      "start": "0:00:49.857188",
+      "stop": "0:01:30.981562"
+    }
+  ],
+  "speakers": {
+    "count": 2,
+    "labels": [
+      "A",
+      "B"
+    ],
+    "embeddings": {
+      "A": [<array of 192 floats>],
+      "B": [<array of 192 floats>]
+    }
+  }
+}
+```
+
+## Performance
+
+The current T4 deployment has an average processing time of 12x (relative to the length of the audio input) - e.g. it will take the model approx. 1 minute of computation to process 12 minutes of audio.
 
 ## Intended use
 
