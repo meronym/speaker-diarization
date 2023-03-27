@@ -12,9 +12,9 @@ The model is based on a pre-trained speaker diarization pipeline from the [`pyan
 
 The main pipeline makes use of:
 
-- `pyannote/segmentation` for permutation-invariant speaker classification on temporal segments
+- `pyannote/segmentation` for permutation-invariant speaker segmentation on temporal slices
 - `speechbrain/spkrec-ecapa-voxceleb` for generating speaker embeddings
-- `AgglomerativeClustering` for determining individual speakers
+- `AgglomerativeClustering` for matching embeddings across temporal slices
 
 See [this post](https://herve.niderb.fr/fastpages/2022/10/23/One-speaker-segmentation-model-to-rule-them-all.html) (from `pyannote.audio`'s author) for more details.
 
