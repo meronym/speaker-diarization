@@ -8,7 +8,7 @@ This model receives an audio file and identifies the individual speakers within 
 
 The model is based on a pre-trained speaker diarization pipeline from the [`pyannote.audio`](pyannote.github.io) package, with a post-processing layer that cleans up the output segments and computes input-wide speaker embeddings.
 
-`pyannote.audio` is an open-source toolkit written in Python for speaker diarization. Based on the [PyTorch](pytorch.org) machine learning framework, it provides a set of trainable end-to-end neural building blocks that can be combined and jointly optimized to build speaker diarization pipelines.
+`pyannote.audio` is an open-source toolkit written in Python for speaker diarization based on [PyTorch](pytorch.org). It provides a set of trainable end-to-end neural building blocks that can be combined and jointly optimized to build speaker diarization pipelines.
 
 The main pipeline makes use of:
 
