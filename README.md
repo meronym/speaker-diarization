@@ -16,7 +16,11 @@ The main pipeline makes use of:
 - `speechbrain/spkrec-ecapa-voxceleb` for generating speaker embeddings
 - `AgglomerativeClustering` for matching embeddings across temporal slices
 
-See [this post](https://herve.niderb.fr/fastpages/2022/10/23/One-speaker-segmentation-model-to-rule-them-all.html) (from `pyannote.audio`'s author) for more details.
+See [this post](https://herve.niderb.fr/fastpages/2022/10/23/One-speaker-segmentation-model-to-rule-them-all.html) (written by the `pyannote.audio` author) for more details.
+
+## Input format
+
+Starting from version `64b78c82`, the model now uses `ffmpeg` to decode the input audio, so it supports a wide variety of input formats - including, but not limited to `mp3`, `aac`, `flac`, `ogg`, `opus`, `wav`.
 
 ## Output format
 
@@ -28,12 +32,12 @@ The model outputs a single `output.json` file with the following structure:
     {
       "speaker": "A",
       "start": "0:00:00.497812",
-      "stop": "0:00:49.452188"
+      "stop": "0:00:09.779063"
     },
     {
       "speaker": "B",
-      "start": "0:00:49.857188",
-      "stop": "0:01:30.981562"
+      "start": "0:00:09.863438",
+      "stop": "0:03:34.962188"
     }
   ],
   "speakers": {
@@ -52,7 +56,7 @@ The model outputs a single `output.json` file with the following structure:
 
 ## Performance
 
-The current T4 deployment has an average processing time of 12x (relative to the length of the audio input) - e.g. it will take the model approx. 1 minute of computation to process 12 minutes of audio.
+The current T4 deployment has an average processing speed factor of 12x (relative to the length of the audio input) - e.g. it will take the model approx. 1 minute of computation to process 12 minutes of audio.
 
 ## Intended use
 
@@ -61,10 +65,6 @@ Data augmentation and segmentation for a variety of transcription and captioning
 ## Ethical considerations
 
 This model may have biases based on the data it has been trained on. It is important to use the model in a responsible manner and adhere to ethical and legal standards.
-
-## Caveats and recommendations
-
-This model has only been tested with `wav` and `flac` input files.
 
 ## Citations
 
