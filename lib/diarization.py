@@ -30,6 +30,7 @@ class DiarizationPostProcessor:
         self.labels = None
 
     def process(self, diarization, embeddings):
+        print('post-processing diarization...')
         # create a new label generator
         self.labels = SpeakerLabelGenerator()
 
@@ -55,6 +56,16 @@ class DiarizationPostProcessor:
                 "count": speaker_count,
                 "labels": speaker_labels,
                 "embeddings": speaker_emb_map,
+            },
+        }
+
+    def empty_result(self):
+        return {
+            "segments": [],
+            "speakers": {
+                "count": 0,
+                "labels": [],
+                "embeddings": {},
             },
         }
 

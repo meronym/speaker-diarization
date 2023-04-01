@@ -8,7 +8,8 @@ import tempfile
 from cog import BasePredictor, Input, Path
 from pyannote.audio.pipelines import SpeakerDiarization
 
-from lib.utils import DiarizationPostProcessor
+from lib.diarization import DiarizationPostProcessor
+from lib.audio import AudioPreProcessor
 
 
 class Predictor(BasePredictor):
@@ -34,25 +35,40 @@ class Predictor(BasePredictor):
             },
         })
         self.diarization_post = DiarizationPostProcessor()
+        self.audio_pre = AudioPreProcessor()
 
-    def predict(
-        self,
-        audio: Path = Input(description="Audio file"),
-    ) -> Path:
-        """Run a single prediction on the model"""
+    def run_diarization(self):
         closure = {'embeddings': None}
 
         def hook(name, *args, **kwargs):
             if name == "embeddings" and len(args) > 0:
                 closure['embeddings'] = args[0]
 
-        diarization = self.diarization(audio, hook=hook)
+        print('diarizing audio file...')
+        diarization = self.diarization(self.audio_pre.output_path, hook=hook)
         embeddings = {
             'data': closure['embeddings'],
             'chunk_duration': self.diarization.segmentation_duration,
             'chunk_offset': self.diarization.segmentation_step * self.diarization.segmentation_duration,
         }
-        result = self.diarization_post.process(diarization, embeddings)
+        return self.diarization_post.process(diarization, embeddings)
+
+    def predict(
+        self,
+        audio: Path = Input(description="Audio file",
+                            default="https://pyannote-speaker-diarization.s3.eu-west-2.amazonaws.com/lex-levin-4min.mp3"),
+    ) -> Path:
+        """Run a single prediction on the model"""
+
+        self.audio_pre.process(audio)
+
+        if self.audio_pre.error:
+            print(self.audio_pre.error)
+            result = self.diarization_post.empty_result()
+        else:
+            result = self.run_diarization()
+
+        self.audio_pre.cleanup()
 
         output = Path(tempfile.mkdtemp()) / "output.json"
         with open(output, "w") as f:

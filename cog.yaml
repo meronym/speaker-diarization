@@ -2,11 +2,13 @@ build:
   gpu: true
 
   system_packages:
+    - 'ffmpeg'
     - 'libsndfile1'
 
   python_version: '3.8'
 
   python_packages:
+    - 'ffmpeg-python==0.2.0'
     - 'torch==1.11.0'
     - 'torchvision==0.12.0'
     - 'torchaudio==0.11.0'
